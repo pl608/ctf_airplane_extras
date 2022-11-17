@@ -7,4 +7,3 @@ adds a modified airplane that is capable of dropping (semi) functional bombs. Ma
  - [ ]   make the points auto-spawn the airplane on destroy (right now its on punch)
  - [ ]   fix bomb bugs: in no-damage mode its breaks the airplane not allowing you to get it, and destroy nodes
  - [ ]   add a red version of the airplane(default blue, changes with dyes needs to change with team color)
-any actually helpfull help accepted
