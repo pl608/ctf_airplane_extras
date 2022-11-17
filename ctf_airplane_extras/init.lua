@@ -5,11 +5,10 @@ extras.auto_spawn = true --doesnt work yet and is ignored
 
 image_timout = 4
 airplanes_destroyed_red = 1
-airplanes_destroyed_blue = 1
+airplanes_destroyed_blue = 0
 airutils.fuel = {["ctf_airplane_extras:gasoline"] = 15/2}
 
 local zero = {x=0,y=0,z=0}
-
 
 function extras.airplane_destroy(color)
     if color == "red" then
@@ -19,12 +18,23 @@ function extras.airplane_destroy(color)
         airplanes_destroyed_blue = airplanes_destroyed_blue+1
     end
 end
+
 function internal.spawn_plane(pos, node, other, is_red)
     --if airplanes_destroyed_red <= 0 then return end
     if other:get_wielded_item():get_name() == "ctf_map:adminpick" then return end
     
-    if is_red then if airplanes_destroyed_red <= 0 then return end airplanes_destroyed_red = airplanes_destroyed_red-1 end
-    if not is_red then if airplanes_destroyed_blue <= 0 then return end airplanes_destroyed_blue = airplanes_destroyed_blue-1 end
+    if is_red then 
+        if airplanes_destroyed_red <= 0 then
+            return 
+        end 
+        airplanes_destroyed_red = airplanes_destroyed_red-1 
+    end
+    if not is_red then 
+        if airplanes_destroyed_blue <= 0 then 
+            return 
+        end 
+        airplanes_destroyed_blue = airplanes_destroyed_blue-1 
+    end
     
     local pointed_pos = pos
     --local node_below = minetest.get_node(pointed_pos).name
@@ -83,12 +93,12 @@ function internal.explode(obj, radius)
 							obj_vel, radius * 10))]]
 				end
 				if do_damage then
-                    if not obj:get_armor_groups().imortal then
+                    --if not obj:get_armor_groups().imortal then
                             obj:punch(obj, 1.0, {
                                 full_punch_interval = 1.0,
                                 damage_groups = {fleshy = damage},
                             }, nil)
-                    end
+                    --end
 				end
 				for _, item in pairs(entity_drops) do
 					add_drop(drops, item)
@@ -100,49 +110,6 @@ function internal.explode(obj, radius)
     obj:remove()
 end
 
-minetest.register_entity("ctf_airplane_extras:" .. "missile_blue", {
-        
-    initial_properties = {
-        physical = true,
-        visual = "sprite",
-        --mesh = "missile.b3d",
-        backface_culling = false,
-        visual_size = {x = 1, y = 1, z = 1},
-        textures = {"missile_blue.png"},
-        collisionbox = {-.5, -.5, -.25, .5, .5, .25},
-        pointable = false,
-        static_save = false,
-    },
-    on_step = function(self,var,moveresult)
-        local obj = self.object
-        obj:set_acceleration({x=0,y=-9.8,z=0})
-        if moveresult.collides and moveresult.collisions then
-            internal.explode(obj, 10)
-        end
-    end
-})
-
-minetest.register_entity("ctf_airplane_extras:" .. "missile_red", {
-        
-    initial_properties = {
-        physical = true,
-        visual = "sprite",
-        --mesh = "missile.b3d",
-        backface_culling = false,
-        visual_size = {x = 1, y = 1, z = 1},
-        textures = {"missile_red.png"},
-        collisionbox = {-.5, -.5, -.25, .5, .5, .25},
-        pointable = false,
-        static_save = false,
-    },
-    on_step = function(self,var,moveresult)
-        local obj = self.object
-        obj:set_acceleration({x=0,y=-9.8,z=0})
-        if moveresult.collides and moveresult.collisions then
-            internal.explode(obj, 10)
-        end
-    end
-})
-
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/blocks.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/items.lua")
+dofile(minetest.get_modpath("ctf_airplane_extras") .. "/entities.lua")

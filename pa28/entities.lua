@@ -321,12 +321,22 @@ minetest.register_entity("pa28:pa28", {
 	    end
 	    
 	    self.lastvelocity = self.object:get_velocity()
-	    self.time_total=self.time_total+self.dtime
+        self.time_total=self.time_total+self.dtime
+        if self.hp_max <= 0 then
+            pa28.destroy(self)
+            extras.airplane_destroy("red")
+        end
+        airutils.setText(self, pa28.plane_text)
     end,
     logic = pa28.flightstep,
 
 	on_punch = function(self, puncher, ttime, toolcaps, dir, damage)
-		if not puncher or not puncher:is_player() then
+        if not puncher or not puncher:is_player() then
+            airutils.setText(self, pa28.plane_text)
+            if self.hp_max <= 0 then
+                pa28.destroy(self)
+                extras.airplane_destroy("red")
+            end
 			return
 		end
 
