@@ -1,18 +1,18 @@
 
 if not minetest.settings:get_bool('pa28.disable_craftitems') then
     -- wing
-    minetest.register_craftitem("pa28:wings",{
+    minetest.register_craftitem("pa28_custom:wings",{
 	    description = "PA28 wings",
 	    inventory_image = "pa28_wings.png",
     })
 -- fuselage
-    minetest.register_craftitem("pa28:fuselage",{
+    minetest.register_craftitem("pa28_custom:fuselage",{
 	    description = "PA28 fuselage",
 	    inventory_image = "pa28_fuselage.png",
     })
 end
 -- pa28
-minetest.register_craftitem("pa28:pa28", {
+minetest.register_craftitem("pa28_custom:pa28", {
 	description = pa28.plane_text,
 	inventory_image = "pa28.png",
     liquids_pointable = false,
@@ -27,7 +27,7 @@ minetest.register_craftitem("pa28:pa28", {
         --local nodedef = minetest.registered_nodes[node_below]
         
 		pointed_pos.y=pointed_pos.y+2.5
-		local pa28_ent = minetest.add_entity(pointed_pos, "pa28:pa28")
+		local pa28_ent = minetest.add_entity(pointed_pos, "pa28_custom:pa28")
 		if pa28_ent and placer then
             local ent = pa28_ent:get_luaentity()
             local owner = placer:get_player_name()
@@ -47,7 +47,7 @@ minetest.register_craftitem("pa28:pa28", {
 
 if not minetest.settings:get_bool('pa28.disable_craftitems') and minetest.get_modpath("default") then
     minetest.register_craft({
-	    output = "pa28:wings",
+	    output = "pa28_custom:wings",
 	    recipe = {
 		    {"default:tin_ingot", "default:tin_ingot", "default:tin_ingot"},
 		    {"default:steel_ingot", "default:tinblock", "default:steel_ingot"},
@@ -55,7 +55,7 @@ if not minetest.settings:get_bool('pa28.disable_craftitems') and minetest.get_mo
     })
 
     minetest.register_craft({
-	    output = "pa28:fuselage",
+	    output = "pa28_custom:fuselage",
 	    recipe = {
 		    {"default:tin_ingot", "default:diamondblock", "default:tin_ingot"},
 		    {"default:steel_ingot", "default:steel_ingot",  "default:steel_ingot"},
@@ -64,10 +64,10 @@ if not minetest.settings:get_bool('pa28.disable_craftitems') and minetest.get_mo
     })
 
 	minetest.register_craft({
-		output = "pa28:pa28",
+		output = "pa28_custom:pa28",
 		recipe = {
-			{"pa28:wings",},
-			{"pa28:fuselage",},
+			{"pa28_custom:wings",},
+			{"pa28_custom:fuselage",},
 		}
 	})
 end

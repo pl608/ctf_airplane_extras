@@ -11,15 +11,15 @@ pa28.trunk_slots = 16
 pa28.plane_text = "PA28"
 pa28.mode = 1 --1 -> velocity    2 -> acceleration
 
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "global_definitions.lua")
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "control.lua")
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "fuel_management.lua")
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "custom_physics.lua")
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "utilities.lua")
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "entities.lua")
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "manual.lua")
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "forms.lua")
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "crafts.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "global_definitions.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "control.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "fuel_management.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "custom_physics.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "utilities.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "entities.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "manual.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "forms.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "crafts.lua")
 
 --
 -- helpers and co.
@@ -58,7 +58,7 @@ minetest.register_chatcommand("pa28_eject", {
             if seat ~= nil then
                 local entity = seat:get_luaentity()
                 if entity then
-                    if entity.name == "pa28:pa28" then
+                    if entity.name == "pa28_custom:pa28" then
                         if entity.driver_name == name then
                             pa28.dettachPlayer(entity, player)
                         elseif entity._passenger == name then
@@ -99,7 +99,7 @@ minetest.register_chatcommand("pa28_manual", {
             if seat ~= nil then
                 local entity = seat:get_luaentity()
                 if entity then
-                    if entity.name == "pa28:pa28" then
+                    if entity.name == "pa28_custom:pa28" then
                         local curr_pos = player:get_pos()
                         curr_pos.y = curr_pos.y + 100
                         entity.object:move_to(curr_pos)

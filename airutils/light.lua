@@ -7,7 +7,7 @@ function airutils.get_xz_from_hipotenuse(orig_x, orig_z, yaw, distance)
     return x, z
 end
 
-minetest.register_node("airutils:light", {
+minetest.register_node("airutils_custom:light", {
 	drawtype = "airlike",
 	--tile_images = {"airutils_light.png"},
 	inventory_image = minetest.inventorycube("airutils_light.png"),
@@ -47,7 +47,7 @@ function airutils.swap_node(self, pos)
     end
     
     if have_air then
-        minetest.set_node(target_pos, {name='airutils:light'})
+        minetest.set_node(target_pos, {name='airutils_custom:light'})
         airutils.remove_light(self)
         self._light_old_pos = target_pos
         return true

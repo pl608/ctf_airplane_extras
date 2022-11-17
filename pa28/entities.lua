@@ -1,4 +1,4 @@
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "global_definitions.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "global_definitions.lua")
 
 --
 -- entity
@@ -6,7 +6,7 @@ dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "global_definitions.lua")
 
 pa28.vector_up = vector.new(0, 1, 0)
 
-minetest.register_entity('pa28:p_lights',{
+minetest.register_entity('pa28_custom:p_lights',{
 initial_properties = {
 	physical = false,
 	collide_with_objects=false,
@@ -34,7 +34,7 @@ initial_properties = {
 	
 })
 
-minetest.register_entity('pa28:light',{
+minetest.register_entity('pa28_custom:light',{
 initial_properties = {
 	physical = false,
 	collide_with_objects=false,
@@ -59,7 +59,7 @@ initial_properties = {
 	
 })
 
-minetest.register_entity('pa28:engine',{
+minetest.register_entity('pa28_custom:engine',{
 initial_properties = {
 	physical = false,
 	collide_with_objects=false,
@@ -86,7 +86,7 @@ initial_properties = {
 --
 -- seat pivot
 --
-minetest.register_entity('pa28:seat_base',{
+minetest.register_entity('pa28_custom:seat_base',{
 initial_properties = {
 	physical = false,
 	collide_with_objects=false,
@@ -108,7 +108,7 @@ initial_properties = {
 	
 })
 
-minetest.register_entity("pa28:pa28", {
+minetest.register_entity("pa28_custom:pa28", {
 	initial_properties = {
 	    physical = true,
         collide_with_objects = true,
@@ -244,35 +244,35 @@ minetest.register_entity("pa28:pa28", {
 
         local pos = self.object:get_pos()
 
-        local lights=minetest.add_entity(pos,'pa28:p_lights')
+        local lights=minetest.add_entity(pos,'pa28_custom:p_lights')
         lights:set_attach(self.object,'',{x=0,y=0,z=0},{x=0,y=0,z=0})
         self.lights = lights
 
-        local light=minetest.add_entity(pos,'pa28:light')
+        local light=minetest.add_entity(pos,'pa28_custom:light')
         light:set_attach(self.object,'',{x=0,y=0,z=0},{x=0,y=0,z=0})
         self.light = light
 
-	    local engine=minetest.add_entity(pos,'pa28:engine')
+	    local engine=minetest.add_entity(pos,'pa28_custom:engine')
 	    engine:set_attach(self.object,'',{x=0,y=0,z=0},{x=0,y=0,z=0})
 		-- set the animation once and later only change the speed
         engine:set_animation({x = 1, y = 12}, 0, 0, true)
 	    self.engine = engine
 
-        local pilot_seat_base=minetest.add_entity(pos,'pa28:seat_base')
+        local pilot_seat_base=minetest.add_entity(pos,'pa28_custom:seat_base')
         pilot_seat_base:set_attach(self.object,'',{x=-4.25,y=-4,z=2},{x=0,y=0,z=0})
 	    self.pilot_seat_base = pilot_seat_base
 
-        local co_pilot_seat_base=minetest.add_entity(pos,'pa28:seat_base')
+        local co_pilot_seat_base=minetest.add_entity(pos,'pa28_custom:seat_base')
         co_pilot_seat_base:set_attach(self.object,'',{x=4.25,y=-4,z=2},{x=0,y=0,z=0})
 	    self.co_pilot_seat_base = co_pilot_seat_base
 
         self._passengers_base = {[1]=nil, [2]=nil,}
         self._passengers = {[1]=nil, [2]=nil,}
 
-        self._passengers_base[1]=minetest.add_entity(pos,'pa28:seat_base')
+        self._passengers_base[1]=minetest.add_entity(pos,'pa28_custom:seat_base')
         self._passengers_base[1]:set_attach(self.object,'',{x=-4.25,y=-4.5,z=-6},{x=0,y=0,z=0})
 
-        self._passengers_base[2]=minetest.add_entity(pos,'pa28:seat_base')
+        self._passengers_base[2]=minetest.add_entity(pos,'pa28_custom:seat_base')
         self._passengers_base[2]:set_attach(self.object,'',{x=4.25,y=-4.5,z=-6},{x=0,y=0,z=0})
 
         airutils.paint(self, self._color, "pa28_painting.png")
@@ -480,7 +480,7 @@ minetest.register_entity("pa28:pa28", {
                     airutils.show_vehicle_trunk_formspec(self, clicker, pa28.trunk_slots)
                 else
                     if pa28.restricted == "true" and not minetest.check_player_privs(clicker, {flight_licence=true}) then
-                        minetest.show_formspec(name, "pa28:flightlicence",
+                        minetest.show_formspec(name, "pa28_custom:flightlicence",
                             "size[4,2]" ..
                             "label[0.0,0.0;Sorry ...]"..
                             "label[0.0,0.7;You need a flight licence to fly it.]" ..

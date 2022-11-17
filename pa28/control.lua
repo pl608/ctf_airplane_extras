@@ -4,7 +4,7 @@ pa28.ideal_step = 0.02
 pa28.rudder_limit = 30
 pa28.elevator_limit = 40
 
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "utilities.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "utilities.lua")
 
 function pa28.powerAdjust(self,dtime,factor,dir,max_power)
     local max = max_power or 100

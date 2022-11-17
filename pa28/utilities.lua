@@ -1,5 +1,5 @@
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "global_definitions.lua")
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "hud.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "global_definitions.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "hud.lua")
 
 function pa28.get_hipotenuse_value(point1, point2)
     return math.sqrt((point1.x - point2.x) ^ 2 + (point1.y - point2.y) ^ 2 + (point1.z - point2.z) ^ 2)
@@ -235,7 +235,7 @@ function pa28.destroy(self)
     --[[
     if not minetest.settings:get_bool('pa28.disable_craftitems') then
         pos.y=pos.y+2
-        minetest.add_item({x=pos.x+math.random()-0.5,y=pos.y,z=pos.z+math.random()-0.5},'pa28:wings')
+        minetest.add_item({x=pos.x+math.random()-0.5,y=pos.y,z=pos.z+math.random()-0.5},'pa28_custom:wings')
 
         for i=1,2 do
 	        minetest.add_item({x=pos.x+math.random()-0.5,y=pos.y,z=pos.z+math.random()-0.5},'default:tin_ingot')
@@ -246,7 +246,7 @@ function pa28.destroy(self)
             minetest.add_item({x=pos.x+math.random()-0.5,y=pos.y,z=pos.z+math.random()-0.5},'default:diamond')
         end
     else
-        minetest.add_item({x=pos.x+math.random()-0.5,y=pos.y,z=pos.z+math.random()-0.5},'pa28:pa28')
+        minetest.add_item({x=pos.x+math.random()-0.5,y=pos.y,z=pos.z+math.random()-0.5},'pa28_custom:pa28')
     end]]
 end
 

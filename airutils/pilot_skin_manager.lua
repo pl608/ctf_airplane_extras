@@ -2,8 +2,8 @@
 airutils.pilot_textures = {"pilot_clothes1.png","pilot_clothes2.png","pilot_clothes3.png","pilot_clothes4.png",
         "pilot_novaskin_girl.png","pilot_novaskin_girl_steampunk.png","pilot_novaskin_girl_2.png","pilot_novaskin_girl_steampunk_2.png"}
 local skinsdb_mod_path = minetest.get_modpath("skinsdb")
-local backup = "airutils:bcp_last_skin"
-local curr_skin = "airutils:skin"
+local backup = "airutils_custom:bcp_last_skin"
+local curr_skin = "airutils_custom:skin"
 
 local set_player_textures =
 	minetest.get_modpath("player_api") and player_api.set_textures
@@ -110,19 +110,19 @@ function airutils.uniform_formspec(name)
 	    basic_form = basic_form.."dropdown[0.5,0.5;4,0.8;textures;".. textures ..";0;false]"
         basic_form = basic_form.."button[0.5,1.6;4,0.8;set_texture;Set Player Texture]"
 
-        minetest.show_formspec(name, "airutils:change", basic_form)
+        minetest.show_formspec(name, "airutils_custom:change", basic_form)
     else
         minetest.chat_send_player(name, "The isn't activated as secure. Aborting")
     end
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-    if formname == "airutils:change" then
+    if formname == "airutils_custom:change" then
         local name = player:get_player_name()
 		if fields.textures or fields.set_texture then
             airutils.set_player_skin(player, fields.textures)
 		end
-        minetest.close_formspec(name, "airutils:change")
+        minetest.close_formspec(name, "airutils_custom:change")
     end
 end)
 

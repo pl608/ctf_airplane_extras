@@ -1,4 +1,4 @@
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "global_definitions.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "global_definitions.lua")
 
 --------------
 -- Manual --
@@ -75,7 +75,7 @@ function pa28.pilot_formspec(name)
 
     basic_form = basic_form.."checkbox[1,11.5;yaw;Yaw by mouse;"..yaw.."]"
 
-    minetest.show_formspec(name, "pa28:pilot_main", basic_form)
+    minetest.show_formspec(name, "pa28_custom:pilot_main", basic_form)
 end
 
 function pa28.pax_formspec(name)
@@ -87,7 +87,7 @@ function pa28.pax_formspec(name)
 	basic_form = basic_form.."button[1,1.0;4,1;new_seat;Change Seat]"
 	basic_form = basic_form.."button[1,2.5;4,1;go_out;Go Offboard]"
 
-    minetest.show_formspec(name, "pa28:passenger_main", basic_form)
+    minetest.show_formspec(name, "pa28_custom:passenger_main", basic_form)
 end
 
 function pa28.go_out_confirmation_formspec(name)
@@ -100,15 +100,15 @@ function pa28.go_out_confirmation_formspec(name)
 	basic_form = basic_form.."button[1.3,1.0;2,0.8;no;No]"
 	basic_form = basic_form.."button[3.6,1.0;2,0.8;yes;Yes]"
 
-    minetest.show_formspec(name, "pa28:go_out_confirmation_form", basic_form)
+    minetest.show_formspec(name, "pa28_custom:go_out_confirmation_form", basic_form)
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-    if formname == "pa28:go_out_confirmation_form" then
+    if formname == "pa28_custom:go_out_confirmation_form" then
         local name = player:get_player_name()
         local plane_obj = pa28.getPlaneFromPlayer(player)
         if plane_obj == nil then
-            minetest.close_formspec(name, "pa28:go_out_confirmation_form")
+            minetest.close_formspec(name, "pa28_custom:go_out_confirmation_form")
             return
         end
         local ent = plane_obj:get_luaentity()
@@ -117,13 +117,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                 pa28.dettach_pax(ent, player)
 		    end
         end
-        minetest.close_formspec(name, "pa28:go_out_confirmation_form")
+        minetest.close_formspec(name, "pa28_custom:go_out_confirmation_form")
     end
-	if formname == "pa28:passenger_main" then
+	if formname == "pa28_custom:passenger_main" then
         local name = player:get_player_name()
         local plane_obj = pa28.getPlaneFromPlayer(player)
         if plane_obj == nil then
-            minetest.close_formspec(name, "pa28:passenger_main")
+            minetest.close_formspec(name, "pa28_custom:passenger_main")
             return
         end
         local ent = plane_obj:get_luaentity()
@@ -141,13 +141,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                 end
 		    end
         end
-        minetest.close_formspec(name, "pa28:passenger_main")
+        minetest.close_formspec(name, "pa28_custom:passenger_main")
 	end
-    if formname == "pa28:pilot_main" then
+    if formname == "pa28_custom:pilot_main" then
         local name = player:get_player_name()
         local plane_obj = pa28.getPlaneFromPlayer(player)
         if plane_obj == nil then
-            minetest.close_formspec(name, "pa28:pilot_main")
+            minetest.close_formspec(name, "pa28_custom:pilot_main")
             return
         end
         local ent = plane_obj:get_luaentity()
@@ -287,6 +287,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                 end
             end
         end
-        minetest.close_formspec(name, "pa28:pilot_main")
+        minetest.close_formspec(name, "pa28_custom:pilot_main")
     end
 end)

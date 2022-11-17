@@ -21,22 +21,12 @@ minetest.register_craftitem("ctf_airplane_extras:gasoline", {
     inventory_image = "gasoline_fuel_can.png",
 })
 
-minetest.register_craftitem("ctf_airplane_extras:missile_tester",{
-    description = "Missile",
+minetest.register_craftitem("ctf_airplane_extras:missile_blue",{
+    description = "Missile Blue",
     inventory_image = "missile_blue.png",
-    on_place = function(itemstack, placer, pointed_thing)
-        local pointed_pos = pointed_thing.under
-		pointed_pos.y=pointed_pos.y+2.5
-        minetest.add_entity(pointed_pos, "ctf_airplane_extras:missile_blue")
-    end
 })
 
-minetest.register_craftitem("ctf_airplane_extras:missile_tester_red",{
-    description = "Missile",
+minetest.register_craftitem("ctf_airplane_extras:missile_red",{
+    description = "Missile Red",
     inventory_image = "missile_red.png",
-    on_place = function(itemstack, placer, pointed_thing)
-        local pointed_pos = pointed_thing.under
-		pointed_pos.y=pointed_pos.y+2.5
-        minetest.add_entity(pointed_pos, "ctf_airplane_extras:missile_red")
-    end
 })

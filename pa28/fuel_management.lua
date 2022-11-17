@@ -1,4 +1,4 @@
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "global_definitions.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "global_definitions.lua")
 
 function pa28.contains(table, val)
     for k,v in pairs(table) do

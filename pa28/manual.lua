@@ -1,4 +1,4 @@
-dofile(minetest.get_modpath("pa28") .. DIR_DELIM .. "global_definitions.lua")
+dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "global_definitions.lua")
 
 --------------
 -- Manual --
@@ -18,11 +18,11 @@ function pa28.manual_formspec(name)
 	basic_form = basic_form.."button[10.25,1.5;4,1;paint;Painting]"
 	basic_form = basic_form.."button[10.25,3.5;4,1;tips;Tips]"
 
-    minetest.show_formspec(name, "pa28:manual_main", basic_form)
+    minetest.show_formspec(name, "pa28_custom:manual_main", basic_form)
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-	if formname == "pa28:manual_main" then
+	if formname == "pa28_custom:manual_main" then
 		if fields.short then
 			local text = {
 				"Shortcuts \n\n",
@@ -50,7 +50,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				"image[0.5,3.75;6,6;pa28_manual_up_view.png]",
 				"label[9.25,0.5;", table.concat(text, ""), "]",
 			}, "")
-			minetest.show_formspec(player:get_player_name(), "pa28:manual_shortcut", shortcut_form)
+			minetest.show_formspec(player:get_player_name(), "pa28_custom:manual_shortcut", shortcut_form)
 		end
 		if fields.panel then
 			local text = {
@@ -80,7 +80,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				"image[0.2,1.75;7,5;pa28_manual_panel.png]",
 				"label[8.5,0.5;", table.concat(text, ""), "]",
 			}, "")
-			minetest.show_formspec(player:get_player_name(), "pa28:manual_panel", panel_form)
+			minetest.show_formspec(player:get_player_name(), "pa28_custom:manual_panel", panel_form)
 		end
 		if fields.fuel then
 			local text = {
@@ -102,7 +102,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				"image[2,3.75;4,2;pa28_manual_fuel.png]",
 				"label[9.25,0.5;", table.concat(text, ""), "]",
 			}, "")
-			minetest.show_formspec(player:get_player_name(), "pa28:fuel", fuel_form)
+			minetest.show_formspec(player:get_player_name(), "pa28_custom:fuel", fuel_form)
 		end
 		if fields.op then
 			local text = {
@@ -133,7 +133,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                 "image[0.5,1.75;6,6;pa28_manual_side_view.png]",
 				"label[9.25,0.25;", table.concat(text, ""), "]",
 			}, "")
-			minetest.show_formspec(player:get_player_name(), "pa28:op", op_form)
+			minetest.show_formspec(player:get_player_name(), "pa28_custom:op", op_form)
 		end
 		if fields.paint then
 			local text = {
@@ -148,7 +148,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				"background[-0.7,-0.5;17.5,11.5;pa28_manual_colors.png]",
 				"label[9.25,0.5;", table.concat(text, ""), "]",
 			}, "")
-			minetest.show_formspec(player:get_player_name(), "pa28:paint", paint_form)
+			minetest.show_formspec(player:get_player_name(), "pa28_custom:paint", paint_form)
 		end
 		if fields.tips then
 			local text = {
@@ -170,7 +170,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				"background[-0.7,-0.5;17.5,11.5;pa28_manual_bg.png]",
 				"label[0.2,0.5;", table.concat(text, ""), "]",
 			}, "")
-			minetest.show_formspec(player:get_player_name(), "pa28:tips", tips_form)
+			minetest.show_formspec(player:get_player_name(), "pa28_custom:tips", tips_form)
 		end
 	end
 end)

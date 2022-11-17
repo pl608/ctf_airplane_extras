@@ -41,7 +41,7 @@ function internal.spawn_plane(pos, node, other, is_red)
     --local nodedef = minetest.registered_nodes[node_below]
     
     pointed_pos.y=pointed_pos.y+2.5
-    local pa28_ent = minetest.add_entity(pointed_pos, "pa28:pa28")
+    local pa28_ent = minetest.add_entity(pointed_pos, "pa28_custom:pa28")
     return itemstack
 end
 
@@ -113,3 +113,4 @@ end
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/blocks.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/items.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/entities.lua")
+dofile(minetest.get_modpath("ctf_airplane_extras") .. "/crafts.lua")

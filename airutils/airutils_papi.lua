@@ -3,7 +3,7 @@
 function airutils.PAPIplace(player,pos)
 	local dir = minetest.dir_to_facedir(player:get_look_dir())
 	local pos1 = vector.new(pos)
-	core.set_node(pos, {name="airutils:papi", param2=dir})
+	core.set_node(pos, {name="airutils_custom:papi", param2=dir})
 	--local player_name = player:get_player_name()
 	--local meta = core.get_meta(pos)
 	--meta:set_string("infotext", "PAPI\rOwned by: "..player_name)
@@ -21,11 +21,11 @@ function airutils.togglePapiSide(pos, node, clicker, itemstack)
     end]]
 
     local dir=node.param2
-    if node.name == "airutils:papi_right" then
-        core.set_node(pos, {name="airutils:papi", param2=dir})
+    if node.name == "airutils_custom:papi_right" then
+        core.set_node(pos, {name="airutils_custom:papi", param2=dir})
     	meta:set_string("infotext", "PAPI - left side\rOwned by: "..player_name)
-    elseif node.name == "airutils:papi" then
-        core.set_node(pos, {name="airutils:papi_right", param2=dir})
+    elseif node.name == "airutils_custom:papi" then
+        core.set_node(pos, {name="airutils_custom:papi_right", param2=dir})
         meta:set_string("infotext", "PAPI - right side\rOwned by: "..player_name)
     end
 	--[[
@@ -47,7 +47,7 @@ airutils.groups_right = {snappy=2,choppy=2,oddly_breakable_by_hand=2,not_in_crea
 airutils.groups = {snappy=2,choppy=2,oddly_breakable_by_hand=2}
 
 -- PAPI node (default left)
-minetest.register_node("airutils:papi",{
+minetest.register_node("airutils_custom:papi",{
 	description = "PAPI",
 	--inventory_image = "papi.png",
 	--wield_image = "papi.png",
@@ -99,8 +99,8 @@ function airutils.remove_papi(pos)
     local node = minetest.get_node(pos)
     if node and meta then
         local dir=node.param2
-        if node.name == "airutils:papi_right" then
-            core.set_node(pos, {name="airutils:papi", param2=dir})
+        if node.name == "airutils_custom:papi_right" then
+            core.set_node(pos, {name="airutils_custom:papi", param2=dir})
         	meta:set_string("infotext", "PAPI - left side\rOwned by: "..player_name)
         end
 
@@ -115,7 +115,7 @@ function airutils.remove_papi(pos)
 end
 
 -- PAPI right node
-minetest.register_node("airutils:papi_right",{
+minetest.register_node("airutils_custom:papi_right",{
     description = "PAPI_right_side",
 	tiles = {"airutils_black.png", "airutils_u_black.png", "airutils_white.png",
 	"airutils_metal.png", {name = "airutils_red.png", backface_culling = true},},
@@ -150,7 +150,7 @@ minetest.register_node("airutils:papi_right",{
 
 -- PAPI craft
 minetest.register_craft({
-	output = 'airutils:papi',
+	output = 'airutils_custom:papi',
 	recipe = {
 		{'default:glass', 'default:mese_crystal', 'default:glass'},
 		{'default:glass', 'default:steel_ingot' , 'default:glass'},

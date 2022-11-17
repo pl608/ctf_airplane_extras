@@ -23,20 +23,20 @@ airutils.colors ={
 airutils.fuel = {["ctf_airplane_extras:gasoline"] = 10}
 
 if not minetest.settings:get_bool('airutils.disable_papi') then
-    dofile(minetest.get_modpath("airutils") .. DIR_DELIM .. "airutils_papi.lua")
+    dofile(minetest.get_modpath("airutils_custom") .. DIR_DELIM .. "airutils_papi.lua")
 end
 if not minetest.settings:get_bool('airutils.disable_tug') then
-    dofile(minetest.get_modpath("airutils") .. DIR_DELIM .. "airutils_tug.lua")
+    dofile(minetest.get_modpath("airutils_custom") .. DIR_DELIM .. "airutils_tug.lua")
 end
 if not minetest.settings:get_bool('airutils.disable_repair') then
-    dofile(minetest.get_modpath("airutils") .. DIR_DELIM .. "airutils_repair.lua")
+    dofile(minetest.get_modpath("airutils_custom") .. DIR_DELIM .. "airutils_repair.lua")
 end
-dofile(minetest.get_modpath("airutils") .. DIR_DELIM .. "inventory_management.lua")
-dofile(minetest.get_modpath("airutils") .. DIR_DELIM .. "light.lua")
-dofile(minetest.get_modpath("airutils") .. DIR_DELIM .. "physics_lib.lua")
+dofile(minetest.get_modpath("airutils_custom") .. DIR_DELIM .. "inventory_management.lua")
+dofile(minetest.get_modpath("airutils_custom") .. DIR_DELIM .. "light.lua")
+dofile(minetest.get_modpath("airutils_custom") .. DIR_DELIM .. "physics_lib.lua")
 
 if player_api and not minetest.settings:get_bool('airutils.disable_uniforms') then
-    dofile(minetest.get_modpath("airutils") .. DIR_DELIM .. "pilot_skin_manager.lua")
+    dofile(minetest.get_modpath("airutils_custom") .. DIR_DELIM .. "pilot_skin_manager.lua")
 end
 
 function airutils.remove(pos)
