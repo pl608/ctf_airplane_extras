@@ -21,12 +21,7 @@ minetest.register_craftitem("ctf_airplane_extras:gasoline", {
     inventory_image = "gasoline_fuel_can.png",
 })
 
-minetest.register_craftitem("ctf_airplane_extras:missile_blue",{
+minetest.register_craftitem("ctf_airplane_extras:missile_token",{
     description = "Missile Blue",
     inventory_image = "missile_blue.png",
-})
-
-minetest.register_craftitem("ctf_airplane_extras:missile_red",{
-    description = "Missile Red",
-    inventory_image = "missile_red.png",
 })

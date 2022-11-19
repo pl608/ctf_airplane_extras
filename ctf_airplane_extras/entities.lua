@@ -1,4 +1,4 @@
-
+--[[
 minetest.register_entity("ctf_airplane_extras:" .. "missile_blue", {
         
     initial_properties = {
@@ -42,3 +42,9 @@ minetest.register_entity("ctf_airplane_extras:" .. "missile_red", {
         end
     end
 })
+]]
+
+internal.register_bomb("red")
+internal.register_bomb("orange")
+internal.register_bomb("purple")
+internal.register_bomb("blue")

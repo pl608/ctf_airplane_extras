@@ -7,7 +7,7 @@ pa28.elevator_limit = 40
 dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "utilities.lua")
 
 function pa28.powerAdjust(self,dtime,factor,dir,max_power)
-    local max = max_power or 100
+    local max = max_power or extras.max_power
     local add_factor = factor/2
     add_factor = add_factor * (dtime/pa28.ideal_step) --adjusting the command speed by dtime
     local power_index = self._power_lever

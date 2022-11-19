@@ -2,6 +2,8 @@ extras = {}
 internal = {}
 
 extras.auto_spawn = true --doesnt work yet and is ignored
+extras.max_power = 500 --*technicly*should not be messed with but its fun
+internal.use_teams = true -- respect teams on explode
 
 image_timout = 4
 airplanes_destroyed_red = 1
@@ -45,11 +47,42 @@ function internal.spawn_plane(pos, node, other, is_red)
     return itemstack
 end
 
-function extras.DropBomb(player)
-    minetest.add_entity(player:get_pos(), "ctf_airplane_extras:missile_blue")
+function internal.register_bomb(team)     
+    minetest.register_entity("ctf_airplane_extras:missile_"..team, {   
+        initial_properties = {
+            physical = true,
+            visual = "sprite",
+            backface_culling = false,
+            visual_size = {x = 1, y = 1, z = 1},
+            textures = {"missile" .. team},
+            collisionbox = {-.5, -.5, -.25, .5, .5, .25},
+            pointable = false,
+            static_save = false,
+        },
+        on_step = function(self,var,moveresult)
+            local obj = self.object
+            obj:set_acceleration({x=0,y=-9.8,z=0})
+            if moveresult.collides and moveresult.collisions then
+                internal.explode(obj, 10, team)
+            end
+        end
+    })
 end
 
-function internal.explode(obj, radius)
+function extras.DropBomb(player)
+    local team = ctf_teams.get(player)
+    function drop(color)
+        if team == color then
+            minetest.add_entity(player:get_pos(), "ctf_airplane_extras:missile_" .. color)
+        end
+    end
+    drop("red")
+    drop("orange")
+    drop("purple")
+    drop("blue")
+end
+
+function internal.explode(obj, radius, team)
     local pos = obj:get_pos()
     --minetest.add_entity(pos,"ctf_airplane_extras:boom")
     minetest.add_particle({
@@ -69,10 +102,13 @@ function internal.explode(obj, radius)
 	for _, obj in pairs(objs) do
 		local obj_pos = obj:get_pos()
 		local dist = math.max(1, vector.distance(pos, obj_pos))
-
-		local damage = (4 / dist) * radius
+        local damage = (4 / dist) * radius
+        
         if obj:is_player() then
-            obj:set_hp(obj:get_hp() - damage)
+            local t = ctf_teams.get(player) or "red" -- hopefully if it fails it will default to red
+            if internal.use_teams then if t ~= team or true then
+                obj:set_hp(obj:get_hp() - damage)
+            end end
         else
             local luaobj = obj:get_luaentity()
 
@@ -114,3 +150,5 @@ dofile(minetest.get_modpath("ctf_airplane_extras") .. "/blocks.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/items.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/entities.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/crafts.lua")
+-- for show off purposes only
+--dofile(minetest.get_modpath("ctf_airplane_extras") .. "/display.lua") 
