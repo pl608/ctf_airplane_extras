@@ -1,3 +1,4 @@
+[![ContentDB](https://content.minetest.net/packages/pl608/ctf_airplane_extras/shields/title/)](https://content.minetest.net/packages/pl608/ctf_airplane_extras/)[![ContentDB](https://content.minetest.net/packages/pl608/ctf_airplane_extras/shields/downloads/)](https://content.minetest.net/packages/pl608/ctf_airplane_extras/)
 # CTF Airplane Extras 
 adds a modified airplane that is capable of dropping (semi) functional bombs. Made specificly for rubenwardy's capture the flag game.
 ### Functions of this modpack:
