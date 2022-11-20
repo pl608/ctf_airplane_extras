@@ -4,6 +4,7 @@ internal = {}
 extras.auto_spawn = true --doesnt work yet and is ignored
 extras.max_power = 500 --*technicly*should not be messed with but its fun
 internal.use_teams = true -- respect teams on explode
+internal.explosion_radius =  5
 
 image_timout = 4
 airplanes_destroyed_red = 1
@@ -21,21 +22,38 @@ function extras.airplane_destroy(color)
     end
 end
 
+function extras.DropBomb(player)
+    local team = ctf_teams.get(player)
+    function drop(color)
+        if ctf_teams.get(player) == color then
+            minetest.add_entity(player:get_pos(), "ctf_airplane_extras:missile_" .. color)
+        else
+            minetest.add_entity(player:get_pos(), "ctf_airplane_extras:missile_blue")
+        end
+    end
+    drop("red")
+    drop("orange")
+    drop("purple")
+    drop("blue")
+end
+
 function internal.spawn_plane(pos, node, other, is_red)
     --if airplanes_destroyed_red <= 0 then return end
-    if other:get_wielded_item():get_name() == "ctf_map:adminpick" then return end
+    if other:get_wielded_item():get_name() or "did not work" == "ctf_map:adminpick" then return end
     
     if is_red then 
         if airplanes_destroyed_red <= 0 then
             return 
-        end 
-        airplanes_destroyed_red = airplanes_destroyed_red-1 
+        else 
+            airplanes_destroyed_red = airplanes_destroyed_red-1 
+        end
     end
     if not is_red then 
         if airplanes_destroyed_blue <= 0 then 
             return 
-        end 
-        airplanes_destroyed_blue = airplanes_destroyed_blue-1 
+        else 
+            airplanes_destroyed_blue = airplanes_destroyed_blue-1 
+        end
     end
     
     local pointed_pos = pos
@@ -54,7 +72,7 @@ function internal.register_bomb(team)
             visual = "sprite",
             backface_culling = false,
             visual_size = {x = 1, y = 1, z = 1},
-            textures = {"missile" .. team},
+            textures = {"missile_" .. team..".png"},
             collisionbox = {-.5, -.5, -.25, .5, .5, .25},
             pointable = false,
             static_save = false,
@@ -63,28 +81,46 @@ function internal.register_bomb(team)
             local obj = self.object
             obj:set_acceleration({x=0,y=-9.8,z=0})
             if moveresult.collides and moveresult.collisions then
-                internal.explode(obj, 10, team)
+                internal.explode(obj, internal.explosion_radius, team)
             end
         end
     })
 end
 
-function extras.DropBomb(player)
-    local team = ctf_teams.get(player)
-    function drop(color)
-        if team == color then
-            minetest.add_entity(player:get_pos(), "ctf_airplane_extras:missile_" .. color)
-        end
-    end
-    drop("red")
-    drop("orange")
-    drop("purple")
-    drop("blue")
+function internal.pos_tostring(pos)
+    return "x=" .. tostring(pos.x) .. ",y=".. tostring(pos.y) .. ",z=".. tostring(pos.z).. ")"
 end
 
-function internal.explode(obj, radius, team)
-    local pos = obj:get_pos()
-    --minetest.add_entity(pos,"ctf_airplane_extras:boom")
+function internal.remove_nodes(pos, radius)
+    --[[first stage
+    for z = pos.z - 2, pos.z + 2 do
+        for y = pos.y - 2, pos.y + 2 do
+            for x = pos.x - 2, pos.x + 2 do
+                local p = {x=x,y=y,z=z}
+                minetest.log(minetest.get_node(pos).name.." destroyed by a bomb at "..internal.pos_tostring(p) or "failed get_node at "..internal.pos_tostring(p))
+                minetest.set_node(p, {name="air"})
+            end
+        end 
+    end]]
+    -- second stage
+    local pr = PseudoRandom(os.time())
+    for z = -radius, radius do
+        for y = -radius, radius do
+            for x = -radius, radius do
+                -- do fancy stuff
+                local r = vector.length(vector.new(x, y, z))
+                if (radius * radius) / (r * r) >= (pr:next(80, 125) / 100) then
+                    local p = {x = pos.x + x, y = pos.y + y, z = pos.z + z}
+                    minetest.log(minetest.get_node(pos).name.." destroyed by a bomb at "..internal.pos_tostring(p) or "failed get_node at "..internal.pos_tostring(p))
+                    minetest.set_node(p, {name="air"})
+                end
+            end
+        end
+    end
+end
+
+function internal.explode(object, radius, team)
+    local pos = object:get_pos()
     minetest.add_particle({
         pos = pos,
         velocity = {x=0, y=0, z=0},
@@ -143,8 +179,19 @@ function internal.explode(obj, radius, team)
 
         end
     end
-    obj:remove()
+    internal.remove_nodes(pos, radius)
+    object:remove()
 end
+
+minetest.register_abm({
+	nodenames = {"ctf_airplane_extras:airplane_spawnblock_red"},
+	--neighbors = {"default:water_source", "default:water_flowing"},
+	interval = 5.0, -- Run every 10 seconds
+	chance = 2, -- Select every 1 in 2 nodes
+	action = function(pos, node, active_object_count, active_object_count_wider)
+		internal.spawn_plane(pos, node, true)
+	end
+})
 
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/blocks.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/items.lua")
