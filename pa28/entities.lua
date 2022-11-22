@@ -362,7 +362,9 @@ minetest.register_entity("pa28_custom:pa28", {
         local itmstck=puncher:get_wielded_item()
         local item_name = ""
         if itmstck then item_name = itmstck:get_name() end
-
+        if is_attached == true then
+            extras.DropBomb(puncher)
+        end
         if is_attached == false then
             if pa28.loadFuel(self, puncher:get_player_name()) then
                 return
@@ -413,9 +415,7 @@ minetest.register_entity("pa28_custom:pa28", {
                 extras.airplane_destroy("red")
             end
         end
-        if is_attached ==true then
-            extras.DropBomb(puncher)
-        end
+       --moved up
 	end,
 
 	on_rightclick = function(self, clicker)
