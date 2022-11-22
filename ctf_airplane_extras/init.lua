@@ -10,7 +10,7 @@ internal.explosion_radius =  5
 image_timout = 4
 airplanes_destroyed_red = 0
 airplanes_destroyed_blue = 0
-airutils.fuel = {["ctf_airplane_extras:gasoline"] = 15/2}
+airutils.fuel = {["ctf_airplane_extras:gasoline"] = 15/2} -- just kicked biofuel off the market :P
 bomb_dejitter_time = .25--drop rate in secs higher the less bombs dropped per sec ie 10 = .1 dps 1 = 1 dps .1 = 1 dps(only intergers allowed :) and 0 means you die :P
 last_drop = 0
 
@@ -121,7 +121,7 @@ function internal.remove_nodes(pos, radius)
         local r = vector.length(vector.new(x, y, z))
         if (radius * radius) / (r * r) >= (pr:next(80, 125) / 100) then
             local p = {x = pos.x + x, y = pos.y + y, z = pos.z + z}
-            minetest.log(minetest.get_node(pos).name.." destroyed by a bomb at "..internal.pos_tostring(p) or "failed get_node at "..internal.pos_tostring(p))
+            --minetest.log(minetest.get_node(pos).name.." destroyed by a bomb at "..internal.pos_tostring(p) or "failed get_node at "..internal.pos_tostring(p))
             minetest.set_node(p, {name="air"})
         end
     end
@@ -204,7 +204,7 @@ minetest.register_abm({
 })]]
 
 -- DEBUG TOOLS
-
+--[[
 minetest.register_chatcommand("vars", {
 	params = "",
 	description = "shows vars",
@@ -221,7 +221,7 @@ minetest.register_chatcommand("vars", {
     end
 })
 
-
+]]
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/blocks.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/items.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/entities.lua")
