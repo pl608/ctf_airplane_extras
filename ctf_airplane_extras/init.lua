@@ -11,7 +11,8 @@ image_timout = 4
 airplanes_destroyed_red = 0
 airplanes_destroyed_blue = 0
 airutils.fuel = {["ctf_airplane_extras:gasoline"] = 15/2} -- just kicked biofuel off the market :P
-bomb_dejitter_time = .25--drop rate in secs higher the less bombs dropped per sec ie 10 = .1 dps 1 = 1 dps .1 = 1 dps(only intergers allowed :) and 0 means you die :P
+bomb_dejitter_time = 1--drop rate in secs higher the less bombs dropped per sec ie 10 = .1 dps 1 = 1 dps .1 = 1 dps(only intergers allowed :) and 0 means you die :P
+dps_multiplyer = 1
 last_drop = 0
 
 local zero = {x=0,y=0,z=0}
@@ -30,7 +31,7 @@ function extras.DropBomb(player)
     function drop(color)
         local inventory_item = "ctf_airplane_extras:missile_token"
         local inv = player:get_inventory()
-        if os.time()-last_drop >= bomb_dejitter_time then -- to avoid bombs blowing up bombs, and also is a control factor
+        if os.time()*dps_multiplyer-last_drop >= bomb_dejitter_time then -- to avoid bombs blowing up bombs, and also is a control factor
             last_drop = os.time()
             if inv:contains_item("main", inventory_item) then
                 local stack = ItemStack(inventory_item .. " 1")
@@ -97,12 +98,7 @@ function internal.register_bomb(team)
             local obj = self.object
             obj:set_acceleration({x=0,y=-9.8,z=0})
             if moveresult.collides and moveresult.collisions then
-                if one_step then
-                    internal.explode(obj, internal.explosion_radius, team)
-                    one_step = false
-                else
-                    one_step=true
-                end
+                internal.explode(obj, internal.explosion_radius, team)
             end
         end
     })
