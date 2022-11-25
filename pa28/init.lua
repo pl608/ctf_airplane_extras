@@ -42,7 +42,7 @@ minetest.register_privilege("flight_licence", {
     give_to_singleplayer = true
 })
 
--- add chatcommand to eject from hydroplane
+--[[ add chatcommand to eject from hydroplane
 
 minetest.register_chatcommand("pa28_eject", {
 	params = "",
@@ -75,7 +75,7 @@ minetest.register_chatcommand("pa28_eject", {
 		end
 	end
 })
-
+]]
 minetest.register_chatcommand("pa28_manual", {
 	params = "",
 	description = "PA28 operation manual",

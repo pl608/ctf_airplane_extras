@@ -5,6 +5,8 @@ dofile(minetest.get_modpath("pa28_custom") .. DIR_DELIM .. "global_definitions.l
 --
 
 pa28.vector_up = vector.new(0, 1, 0)
+pa28.is_ground = nil
+
 
 minetest.register_entity('pa28_custom:p_lights',{
 initial_properties = {
@@ -305,7 +307,8 @@ minetest.register_entity("pa28_custom:pa28", {
 	    local vel = self.object:get_velocity()
 	    
 	    if colinfo then 
-		    self.isonground = colinfo.touching_ground
+            self.isonground = colinfo.touching_ground
+            pa28.is_ground = self.isonground
 	    else
 		    if self.lastvelocity.y==0 and vel.y==0 then
 			    self.isonground = true
@@ -362,9 +365,13 @@ minetest.register_entity("pa28_custom:pa28", {
         local itmstck=puncher:get_wielded_item()
         local item_name = ""
         if itmstck then item_name = itmstck:get_name() end
-        if is_attached == true then
+        if is_attached == true then if pa28.is_ground ~= true then
             extras.DropBomb(puncher)
-        end
+        else
+            if pa28.loadFuel(self, puncher:get_player_name()) then
+                return
+            end
+        end end
         if is_attached == false then
             if pa28.loadFuel(self, puncher:get_player_name()) then
                 return

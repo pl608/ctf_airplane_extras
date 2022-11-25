@@ -118,6 +118,7 @@ function internal.remove_nodes(pos, radius)
         if (radius * radius) / (r * r) >= (pr:next(80, 125) / 100) then
             local p = {x = pos.x + x, y = pos.y + y, z = pos.z + z}
             --minetest.log(minetest.get_node(pos).name.." destroyed by a bomb at "..internal.pos_tostring(p) or "failed get_node at "..internal.pos_tostring(p))
+            local node = minetest.get_node(pos)
             minetest.set_node(p, {name="air"})
         end
     end
