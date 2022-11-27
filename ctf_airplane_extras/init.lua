@@ -3,9 +3,15 @@ internal = {}
 --plane_spawned = {}
 
 extras.auto_spawn = true --doesnt work yet and is ignored
-extras.max_power = 150 --*technicly*should not be messed with but its fun
+extras.max_power = 500 --*technicly*should not be messed with but its fun
 internal.use_teams = true -- respect teams on explode
-internal.explosion_radius =  5
+internal.explosion_radius =  2
+bomb_override = {   "ctf_ranged:pistol",
+                    "ctf_ranged:rifle",
+                    "ctf_ranged:shotgun",
+                    "ctf_ranged:smg",
+                    "ctf_ranged:sniper",
+                    "ctf_ranged:sniper_magnum"} --items that override bomb dropping
 
 image_timout = 4
 airplanes_destroyed_red = 0
@@ -16,7 +22,7 @@ dps_multiplyer = 1
 last_drop = 0
 
 local zero = {x=0,y=0,z=0}
-
+-- used in pa28/utilities.lua:234,
 function extras.airplane_destroy(color)
     if color == "red" then
         airplanes_destroyed_red = airplanes_destroyed_red+1
@@ -31,6 +37,14 @@ function extras.DropBomb(player)
     function drop(color)
         local inventory_item = "ctf_airplane_extras:missile_token"
         local inv = player:get_inventory()
+        local weild = player:get_wielded_item()
+        
+        --local item_name = wield:get_name()
+        if check_override(wield)then
+            return
+        else
+            local a = 1
+        end
         if os.time()*dps_multiplyer-last_drop >= bomb_dejitter_time then -- to avoid bombs blowing up bombs, and also is a control factor
             last_drop = os.time()
             if inv:contains_item("main", inventory_item) then
@@ -117,9 +131,11 @@ function internal.remove_nodes(pos, radius)
         local r = vector.length(vector.new(x, y, z))
         if (radius * radius) / (r * r) >= (pr:next(80, 125) / 100) then
             local p = {x = pos.x + x, y = pos.y + y, z = pos.z + z}
-            --minetest.log(minetest.get_node(pos).name.." destroyed by a bomb at "..internal.pos_tostring(p) or "failed get_node at "..internal.pos_tostring(p))
-            local node = minetest.get_node(pos)
-            minetest.set_node(p, {name="air"})
+            if check_immortal(p) == true then
+                return
+            else
+                minetest.remove_node(p)
+            end
         end
     end
     end
@@ -142,6 +158,7 @@ function internal.explode(object, radius, team)
         glow = 100
     })
     local objs = minetest.get_objects_inside_radius(pos, radius)
+    --damage entites/players
 	for _, obj in pairs(objs) do
 		local obj_pos = obj:get_pos()
 		local dist = math.max(1, vector.distance(pos, obj_pos))
@@ -186,19 +203,32 @@ function internal.explode(object, radius, team)
 
         end
     end
+    -- remove nodes
     internal.remove_nodes(pos, radius)
     object:remove()
 end
---[[
-minetest.register_abm({
-	nodenames = {"ctf_airplane_extras:airplane_spawnblock_red"},
-	--neighbors = {"default:water_source", "default:water_flowing"},
-	interval = 5.0, -- Run every 10 seconds
-	chance = 2, -- Select every 1 in 2 nodes
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		internal.spawn_plane(pos, node, nil, true)
-	end
-})]]
+
+function check_immortal(pos)
+    local node = minetest.get_node(pos)
+    local def = minetest.registered_nodes[node.name]
+    if not (def and def.groups) then 
+        return
+    else 
+        if (def.groups.immortal) then
+            return def.groups.immortal >= 1
+        end
+    end
+end
+
+function check_override(item)
+    for z = 0, 6 do
+        if item == ItemStack(bomb_override[z]) then
+            return true
+        else
+            return false
+        end
+    end
+end
 
 -- DEBUG TOOLS
 --[[
@@ -218,7 +248,17 @@ minetest.register_chatcommand("vars", {
     end
 })
 
+minetest.register_chatcommand("drop", {
+	params = "",
+	description = "drop bomb for testing purposes",
+	privs = {interact = true},
+    func = function(name, param)
+        player = minetest.get_player_by_name(name)
+        extras.DropBomb(player)
+    end
+})
 ]]
+
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/blocks.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/items.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/entities.lua")

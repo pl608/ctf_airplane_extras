@@ -327,7 +327,6 @@ minetest.register_entity("pa28_custom:pa28", {
         self.time_total=self.time_total+self.dtime
         if self.hp_max <= 0 then
             pa28.destroy(self)
-            extras.airplane_destroy("red")
         end
         airutils.setText(self, pa28.plane_text)
     end,
@@ -338,7 +337,6 @@ minetest.register_entity("pa28_custom:pa28", {
             airutils.setText(self, pa28.plane_text)
             if self.hp_max <= 0 then
                 pa28.destroy(self)
-                extras.airplane_destroy("red")
             end
 			return
 		end
@@ -365,13 +363,18 @@ minetest.register_entity("pa28_custom:pa28", {
         local itmstck=puncher:get_wielded_item()
         local item_name = ""
         if itmstck then item_name = itmstck:get_name() end
-        if is_attached == true then if pa28.is_ground ~= true then
-            extras.DropBomb(puncher)
-        else
-            if pa28.loadFuel(self, puncher:get_player_name()) then
-                return
+
+        --stuff
+        if is_attached == true then 
+            if pa28.is_ground ~= true then
+                extras.DropBomb(puncher)
             end
-        end end
+            if pa28.is_ground == true then
+                if pa28.loadFuel(self, puncher:get_player_name()) then
+                    return
+                 end
+            end 
+        end
         if is_attached == false then
             if pa28.loadFuel(self, puncher:get_player_name()) then
                 return
@@ -482,45 +485,48 @@ minetest.register_entity("pa28_custom:pa28", {
         --  attach pilot
         --=========================
         elseif not self.driver_name then
-            if self.owner == name or minetest.check_player_privs(clicker, {protection_bypass=true}) then
-                if clicker:get_player_control().aux1 == true then --lets see the inventory
-                    airutils.show_vehicle_trunk_formspec(self, clicker, pa28.trunk_slots)
-                else
-                    if pa28.restricted == "true" and not minetest.check_player_privs(clicker, {flight_licence=true}) then
-                        minetest.show_formspec(name, "pa28_custom:flightlicence",
-                            "size[4,2]" ..
-                            "label[0.0,0.0;Sorry ...]"..
-                            "label[0.0,0.7;You need a flight licence to fly it.]" ..
-                            "label[0.0,1.0;You must obtain it from server admin.]" ..
-                            "button_exit[1.5,1.9;0.9,0.1;e;Exit]")
-                        return
-                    end
+            --if self.owner == name or minetest.check_player_privs(clicker, {protection_bypass=true}) then
+            if clicker:get_player_control().aux1 == true then --lets see the inventory
+                airutils.show_vehicle_trunk_formspec(self, clicker, pa28.trunk_slots)
+            else
+                if pa28.restricted == "true" and not minetest.check_player_privs(clicker, {flight_licence=true}) then
+                    minetest.show_formspec(name, "pa28_custom:flightlicence",
+                        "size[4,2]" ..
+                        "label[0.0,0.0;Sorry ...]"..
+                        "label[0.0,0.7;You need a flight licence to fly it.]" ..
+                        "label[0.0,1.0;You must obtain it from server admin.]" ..
+                        "button_exit[1.5,1.9;0.9,0.1;e;Exit]")
+                    return
+                end
 
-                    if is_under_water then return end
-                    --remove pax to prevent bug
-                    if self._passenger then 
-                        local pax_obj = minetest.get_player_by_name(self._passenger)
-                        pa28.dettach_pax(self, pax_obj)
-                    end
-                    for i = 10,1,-1
-                    do 
+                if is_under_water then return end
+                --remove pax to prevent bug
+                if self._passenger then 
+                    local pax_obj = minetest.get_player_by_name(self._passenger)
+                    pa28.dettach_pax(self, pax_obj)
+                end
+                for i = 10,1,-1
+                do 
+                    if self._passengers[i] then
                         if self._passengers[i] then
-                            if self._passengers[i] then
-                                local passenger = minetest.get_player_by_name(self._passengers[i])
-                                if passenger then pa28.dettach_pax(self, passenger) end
-                            end
+                            local passenger = minetest.get_player_by_name(self._passengers[i])
+                            if passenger then pa28.dettach_pax(self, passenger) end
                         end
                     end
-
-                    --attach player
-                    -- no driver => clicker is new driver
-                    pa28.attach(self, clicker)
-                    self._command_is_given = false
                 end
+
+                --attach player
+                -- no driver => clicker is new driver
+                pa28.attach(self, clicker)
+                self._command_is_given = false
+            end
+        
+            --end
+            --[[
             else
                 pa28.dettach_pax(self, clicker)
                 minetest.chat_send_player(name, core.colorize('#ff0000', " >>> You aren't the owner of this "..pa28.plane_text.."."))
-            end
+            end]]
 
         --=========================
         --  attach passenger
