@@ -4,21 +4,23 @@ internal = {}
 
 extras.auto_spawn = true --doesnt work yet and is ignored
 extras.max_power = 500 --*technicly*should not be messed with but its fun
+internal.speed = -139 --better off ground detection then before
 internal.use_teams = true -- respect teams on explode
-internal.explosion_radius =  2
+internal.explosion_radius =  4
+internal.drop_radius_addition =  4
 bomb_override = {   "ctf_ranged:pistol",
                     "ctf_ranged:rifle",
                     "ctf_ranged:shotgun",
                     "ctf_ranged:smg",
                     "ctf_ranged:sniper",
-                    "ctf_ranged:sniper_magnum"} --items that override bomb dropping
+                    "ctf_ranged:sniper_magnum",
+                    "ctf_airplane_extras:gasoline"} --items that override bomb dropping
 
 image_timout = 4
 airplanes_destroyed_red = 0
 airplanes_destroyed_blue = 0
 airutils.fuel = {["ctf_airplane_extras:gasoline"] = 15/2} -- just kicked biofuel off the market :P
 bomb_dejitter_time = 1--drop rate in secs higher the less bombs dropped per sec ie 10 = .1 dps 1 = 1 dps .1 = 1 dps(only intergers allowed :) and 0 means you die :P
-dps_multiplyer = 1
 last_drop = 0
 
 local zero = {x=0,y=0,z=0}
@@ -32,20 +34,20 @@ function extras.airplane_destroy(color)
     end
 end
 -- used in pa28/entites.lua:366
-function extras.DropBomb(player)
+function extras.DropBomb(self, player)
+    local s = self.speed_a
+
     local team = ctf_teams.get(player)
     function drop(color)
         local inventory_item = "ctf_airplane_extras:missile_token"
         local inv = player:get_inventory()
         local weild = player:get_wielded_item()
         
-        --local item_name = wield:get_name()
-        if check_override(wield)then
+        if check_override(wield) then
             return
-        else
-            local a = 1
         end
-        if os.time()*dps_multiplyer-last_drop >= bomb_dejitter_time then -- to avoid bombs blowing up bombs, and also is a control factor
+
+        if (os.time()-last_drop >= bomb_dejitter_time and s < internal.speed) then -- to avoid bombs blowing up bombs, and also is a control factor
             last_drop = os.time()
             if inv:contains_item("main", inventory_item) then
                 local stack = ItemStack(inventory_item .. " 1")
@@ -69,7 +71,7 @@ end
 function internal.spawn_plane(pos, node, other, is_red)
     --if airplanes_destroyed_red <= 0 then return end
     if other ~= nil then if other:get_wielded_item():get_name() or "did not work" == "ctf_map:adminpick" then return end end
-    --if plane_spawned[internal.pos_tostring(pos)] then return else plane_spawned[internal.pos_tostring(pos)] = true end
+    --if plane_spawned[pos_tostring(pos)] then return else plane_spawned[pos_tostring(pos)] = true end
     if is_red then 
         if airplanes_destroyed_red <= 0 then
             return 
@@ -90,7 +92,7 @@ function internal.spawn_plane(pos, node, other, is_red)
     --local nodedef = minetest.registered_nodes[node_below]
     
     pointed_pos.y=pointed_pos.y+2.5
-    --plane_spawned[internal.pos_tostring(pos)] = true
+    --plane_spawned[pos_tostring(pos)] = true
     local pa28_ent = minetest.add_entity(pointed_pos, "pa28_custom:pa28")
     return itemstack
 end
@@ -118,7 +120,7 @@ function internal.register_bomb(team)
     })
 end
 
-function internal.pos_tostring(pos)
+function pos_tostring(pos)
     return "x=" .. tostring(pos.x) .. ",y=".. tostring(pos.y) .. ",z=".. tostring(pos.z).. ")"
 end
 
@@ -140,6 +142,23 @@ function internal.remove_nodes(pos, radius)
     end
     end
     end
+    local radius = radius+internal.drop_radius_addition
+    for z = -radius, radius do
+        for y = -radius, radius do
+            for x = -radius, radius do
+                -- do fancy stuff
+                local r = vector.length(vector.new(x, y, z))
+                if (radius * radius) / (r * r) >= (pr:next(80, 125) / 100) then
+                    local p = {x = pos.x + x, y = pos.y + y, z = pos.z + z}
+                    if check_immortal(p) == true then
+                        return
+                    else
+                        minetest.spawn_falling_node(p)
+                    end
+                end
+            end
+        end
+    end
 end
 
 function internal.explode(object, radius, team)
@@ -158,6 +177,8 @@ function internal.explode(object, radius, team)
         glow = 100
     })
     local objs = minetest.get_objects_inside_radius(pos, radius)
+    -- remove nodes
+    internal.remove_nodes(pos, radius)
     --damage entites/players
 	for _, obj in pairs(objs) do
 		local obj_pos = obj:get_pos()
@@ -203,8 +224,8 @@ function internal.explode(object, radius, team)
 
         end
     end
-    -- remove nodes
-    internal.remove_nodes(pos, radius)
+   
+    
     object:remove()
 end
 
@@ -221,13 +242,25 @@ function check_immortal(pos)
 end
 
 function check_override(item)
-    for z = 0, 6 do
+    for z = 0, get_table_len(bomb_override) do
         if item == ItemStack(bomb_override[z]) then
             return true
         else
             return false
         end
     end
+end
+
+function pos_tostring(pos)
+    return "x=" .. tostring(pos.x) .. ",y=".. tostring(pos.y) .. ",z=".. tostring(pos.z).. ")"
+end
+
+function get_table_len(table)
+    local len = 0
+    for k, v in pairs(table) do
+        len = len+1
+    end
+    return len
 end
 
 -- DEBUG TOOLS
@@ -239,12 +272,8 @@ minetest.register_chatcommand("vars", {
     func = function(name, param)
         --local msg = "internal.use_teams = "..tostring(internal.use_teams)
         minetest.log("___________________________________________")
-        minetest.log("lastdrop-os.time() = "..tostring(last_drop-os.time()))
-        minetest.log("lastdrop = "..tostring(last_drop))
-        minetest.log("os.time() = "..tostring(os.time()))
-        minetest.log("internal.explosion_radius = "..tostring(internal.explosion_radius))
-        minetest.log("airplanes_destroyed_red = "..tostring(airplanes_destroyed_red))
-        minetest.log("airplanes_destroyed_blue = "..tostring(airplanes_destroyed_blue))
+        minetest.log("speed = "..tostring(internal.speed))
+        
     end
 })
 
@@ -257,8 +286,8 @@ minetest.register_chatcommand("drop", {
         extras.DropBomb(player)
     end
 })
-]]
 
+]]
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/blocks.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/items.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/entities.lua")

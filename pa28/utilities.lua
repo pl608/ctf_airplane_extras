@@ -811,6 +811,10 @@ function pa28.flightstep(self)
     local indicated_speed = longit_speed * 0.9
     if indicated_speed < 0 then indicated_speed = 0 end
     local speed_angle = pa28.get_gauge_angle(indicated_speed, -45)
+    
+    -- for extra calulations
+    self.speed_a = speed_angle
+
     self.object:set_bone_position("speed", {x=-7.01,y=1.26,z=10.2}, {x=0,y=0,z=speed_angle})
 
     local energy_indicator_angle = pa28.get_gauge_angle((PA28_MAX_FUEL - self._energy)/1.5) - 90

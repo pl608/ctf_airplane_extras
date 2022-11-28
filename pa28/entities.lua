@@ -366,9 +366,7 @@ minetest.register_entity("pa28_custom:pa28", {
 
         --stuff
         if is_attached == true then 
-            if pa28.is_ground ~= true then
-                extras.DropBomb(puncher)
-            end
+            extras.DropBomb(self, puncher)
             if pa28.is_ground == true then
                 if pa28.loadFuel(self, puncher:get_player_name()) then
                     return
