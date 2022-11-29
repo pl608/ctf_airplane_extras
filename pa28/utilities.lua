@@ -30,7 +30,7 @@ function pa28.attach(self, player, instructor_mode)
     instructor_mode = instructor_mode or false
     local name = player:get_player_name()
     self.driver_name = name
-
+    extras.paint_team(self, player)
     -- attach the driver
     local eye_y = 0
     if instructor_mode == true then
@@ -61,7 +61,7 @@ end
 -- attach passenger
 function pa28.check_passenger_is_attached(self, name)
     local is_attached = false
-    if self._passenger == name then is_attached = true end
+    if self._passenger == name and self.team == ctf_team.get(minetest.get_player_by_name(name)) then is_attached = true end
     if is_attached == false then
         for i = 2,1,-1 
         do 

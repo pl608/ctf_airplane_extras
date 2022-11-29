@@ -2,6 +2,16 @@ extras = {}
 internal = {}
 --plane_spawned = {}
 
+
+internal.colors ={
+    blue='#0063b0',
+    green='#4ee34c',
+    orange='#ff8b0e',
+    red='#dc1818',
+    purple='#a437ff',
+}
+
+
 extras.auto_spawn = true --doesnt work yet and is ignored
 extras.max_power = 500 --*technicly*should not be messed with but its fun
 internal.speed = -139 --better off ground detection then before
@@ -16,7 +26,6 @@ bomb_override = {   "ctf_ranged:pistol",
                     "ctf_ranged:sniper_magnum",
                     "ctf_airplane_extras:gasoline"} --items that override bomb dropping
 
-image_timout = 4
 airplanes_destroyed_red = 0
 airplanes_destroyed_blue = 0
 airutils.fuel = {["ctf_airplane_extras:gasoline"] = 15/2} -- just kicked biofuel off the market :P
@@ -24,6 +33,24 @@ bomb_dejitter_time = 1--drop rate in secs higher the less bombs dropped per sec 
 last_drop = 0
 
 local zero = {x=0,y=0,z=0}
+--pa28/utilites.lua:33
+function extras.paint_team(self,player)
+    local texture_name = "pa28_painting.png"
+    self.team = ctf_teams.get(player)
+    minetest.log(tostring(self.team))
+    if self.team ~= nil then
+        self._color = colstr
+        local l_textures = self.initial_properties.textures
+        for _, texture in ipairs(l_textures) do
+            local indx = texture:find(texture_name)
+            if indx then
+                l_textures[_] = texture_name.."^[multiply:".. internal.colors[ctf_teams.get(player)]
+            end
+        end
+	    self.object:set_properties({textures=l_textures})
+    end
+end
+
 -- used in pa28/utilities.lua:234,
 function extras.airplane_destroy(color)
     if color == "red" then
@@ -36,7 +63,6 @@ end
 -- used in pa28/entites.lua:366
 function extras.DropBomb(self, player)
     local s = self.speed_a
-
     local team = ctf_teams.get(player)
     function drop(color)
         local inventory_item = "ctf_airplane_extras:missile_token"
@@ -176,6 +202,11 @@ function internal.explode(object, radius, team)
         texture = "grenades_boom.png",
         glow = 100
     })
+    minetest.sound_play("grenades_explode", {
+        pos = pos,
+        gain = 2.0,
+        max_hear_distance = 128,
+    })
     local objs = minetest.get_objects_inside_radius(pos, radius)
     -- remove nodes
     internal.remove_nodes(pos, radius)
@@ -224,8 +255,6 @@ function internal.explode(object, radius, team)
 
         end
     end
-   
-    
     object:remove()
 end
 
