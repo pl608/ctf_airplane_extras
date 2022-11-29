@@ -9,5 +9,5 @@ adds a modified airplane that is capable of dropping functional bombs with WIP f
  - [x]   added support for 4 teams
  - [x]   make the points auto-spawn the airplane on destroy
  - [x]   Add ground detection for bombs and add the ability to fuel inside but on the ground
- - [ ]   fix bomb bugs: in no-damage mode its breaks the airplane not allowing you to get it, and destroy nodes
+ - [ ]   fix bomb bugs: in no-damage mode its breaks the airplane not allowing you to get in it
  - [x]   add a red version of the airplane(default blue, changes with dyes needs to change with team color)
