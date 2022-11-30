@@ -150,25 +150,9 @@ function pos_tostring(pos)
     return "x=" .. tostring(pos.x) .. ",y=".. tostring(pos.y) .. ",z=".. tostring(pos.z).. ")"
 end
 
-function internal.remove_nodes(pos, radius)
+function internal.remove_nodes(pos, radius, disable_drop_nodes)
+    if not disable_drop_nodes then disable_drop_nodes = true end
     local pr = PseudoRandom(os.time())
-    for z = -radius, radius do
-    for y = -radius, radius do
-    for x = -radius, radius do
-        -- do fancy stuff
-        local r = vector.length(vector.new(x, y, z))
-        if (radius * radius) / (r * r) >= (pr:next(80, 125) / 100) then
-            local p = {x = pos.x + x, y = pos.y + y, z = pos.z + z}
-            if check_immortal(p) == true then
-                return
-            else
-                minetest.remove_node(p)
-            end
-        end
-    end
-    end
-    end
-    local radius = radius+internal.drop_radius_addition
     for z = -radius, radius do
         for y = -radius, radius do
             for x = -radius, radius do
@@ -179,14 +163,33 @@ function internal.remove_nodes(pos, radius)
                     if check_immortal(p) == true then
                         return
                     else
-                        minetest.spawn_falling_node(p)
+                        minetest.remove_node(p)
+                    end
+                end
+            end
+        end
+    end
+    if disable_drop_nodes then
+        local radius = radius+internal.drop_radius_addition
+        for z = -radius, radius do
+            for y = -radius, radius do
+                for x = -radius, radius do
+                    -- do fancy stuff
+                    local r = vector.length(vector.new(x, y, z))
+                    if (radius * radius) / (r * r) >= (pr:next(80, 125) / 100) then
+                        local p = {x = pos.x + x, y = pos.y + y, z = pos.z + z}
+                        if check_immortal(p) == true then
+                            return
+                        else
+                            minetest.spawn_falling_node(p)
+                        end
                     end
                 end
             end
         end
     end
 end
-
+-- This is the fun part
 function internal.explode(object, radius, team)
     local pos = object:get_pos()
     minetest.add_particle({
