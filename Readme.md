@@ -1,7 +1,7 @@
 [![ContentDB](https://content.minetest.net/packages/pl608/ctf_airplane_extras/shields/title/)](https://content.minetest.net/packages/pl608/ctf_airplane_extras/)[![ContentDB](https://content.minetest.net/packages/pl608/ctf_airplane_extras/shields/downloads/)](https://content.minetest.net/packages/pl608/ctf_airplane_extras/)
 # CTF Airplane Extras 
 adds a modified airplane that is capable of dropping functional bombs with WIP features. Made specificly for rubenwardy's capture the flag game.
-### Functions of this modpack:
+### Functions of this modpack/bugs:
  - [x]   modify the pa28 airplane to ignore protection/owners
  - [x]   add points for the airplanes to spawn at and prevent infinite airplane from being spawned (ctf_airplane_extras:airplane_spawnblock_(blue/red)) 
  - [x]   adds a bomb that drops on promnt from the airplane and explodes on collision with ground(red/blue version)
