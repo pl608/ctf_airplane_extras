@@ -4,12 +4,11 @@ minetest.register_node("ctf_airplane_extras:airplane_spawnblock_display",{
     tiles = {"default_stone_brick.png^pa28.png"},
 })
 
-minetest.register_entity("ctf_airplane_extras:" .. "missile_red_display", {
+minetest.register_entity("ctf_airplane_extras:missile_red_display", {
         
     initial_properties = {
         physical = true,
         visual = "sprite",
-        --mesh = "missile.b3d",
         backface_culling = false,
         visual_size = {x = 1, y = 1, z = 1},
         textures = {"missile_red.png"},
@@ -18,12 +17,11 @@ minetest.register_entity("ctf_airplane_extras:" .. "missile_red_display", {
         static_save = false,
     }
 })
-minetest.register_entity("ctf_airplane_extras:" .. "missile_blue_display", {
+minetest.register_entity("ctf_airplane_extras:missile_blue_display", {
         
     initial_properties = {
         physical = true,
         visual = "sprite",
-        --mesh = "missile.b3d",
         backface_culling = false,
         visual_size = {x = 1, y = 1, z = 1},
         textures = {"missile_blue.png"},
@@ -46,14 +44,7 @@ minetest.register_craftitem("ctf_airplane_extras:d_missile_red", {
         
 		pointed_pos.y=pointed_pos.y+1.5
 		local pa28_ent = minetest.add_entity(pointed_pos, "ctf_airplane_extras:missile_red_display")
-		if pa28_ent and placer then
-            local ent = pa28_ent:get_luaentity()
-            local owner = placer:get_player_name()
-            ent.owner = owner
-			pa28_ent:set_yaw(placer:get_look_horizontal())
-			itemstack:take_item()
-		end
-
+        itemstack:take_item()
 		return itemstack
 	end,
 })

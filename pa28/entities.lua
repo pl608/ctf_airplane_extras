@@ -420,7 +420,6 @@ minetest.register_entity("pa28_custom:pa28", {
 
             if self.hp_max <= 0 then
                 pa28.destroy(self)
-                extras.airplane_destroy("red")
             end
         end
        --moved up

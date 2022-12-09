@@ -1,6 +1,7 @@
-extras = {}
-internal = {}
---plane_spawned = {}
+extras = {
+}
+internal = {
+}
 
 
 internal.colors ={
@@ -18,14 +19,15 @@ internal.speed = -139 --better off ground detection then before
 internal.use_teams = true -- respect teams on explode
 internal.explosion_radius =  4
 internal.drop_radius_addition =  4
+--items that override bomb dropping
 bomb_override = {   "ctf_ranged:pistol",
                     "ctf_ranged:rifle",
                     "ctf_ranged:shotgun",
                     "ctf_ranged:smg",
                     "ctf_ranged:sniper",
                     "ctf_ranged:sniper_magnum",
-                    "ctf_airplane_extras:gasoline"} --items that override bomb dropping
-
+                    "ctf_airplane_extras:gasoline"
+} 
 airplanes_destroyed_red = 0
 airplanes_destroyed_blue = 0
 airutils.fuel = {["ctf_airplane_extras:gasoline"] = 15/2} -- just kicked biofuel off the market :P
@@ -51,7 +53,7 @@ function extras.paint_team(self,player)
     end
 end
 
--- used in pa28/utilities.lua:234,
+--pa28/utilities.lua:234,
 function extras.airplane_destroy(color)
     if color == "red" then
         airplanes_destroyed_red = airplanes_destroyed_red+1
@@ -60,7 +62,7 @@ function extras.airplane_destroy(color)
         airplanes_destroyed_blue = airplanes_destroyed_blue+1
     end
 end
--- used in pa28/entites.lua:366
+--pa28/entites.lua:366
 function extras.DropBomb(self, player)
     local s = self.speed_a
     local team = ctf_teams.get(player)
@@ -169,7 +171,7 @@ function internal.remove_nodes(pos, radius, disable_drop_nodes)
             end
         end
     end
-    if disable_drop_nodes then
+    if disable_drop_nodes ~= false then
         local radius = radius+internal.drop_radius_addition
         for z = -radius, radius do
             for y = -radius, radius do
@@ -324,5 +326,5 @@ dofile(minetest.get_modpath("ctf_airplane_extras") .. "/blocks.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/items.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/entities.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/crafts.lua")
--- for show off purposes only
+-- for showoff purposes only
 --dofile(minetest.get_modpath("ctf_airplane_extras") .. "/display.lua") 

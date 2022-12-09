@@ -86,7 +86,11 @@ function airutils.setText(self, vehicle_name)
         )
     end
     if properties then
-        properties.infotext = vehicle_name .." of " .. self.owner .. "." .. formatted
+        if self.team ~= nil then
+            properties.infotext = vehicle_name .." of " .. self.team .. "." .. formatted
+        else
+            properties.infotext = vehicle_name .." that doesnt belong to any team" .. formatted
+        end
         self.object:set_properties(properties)
     end
 end
