@@ -19,7 +19,7 @@ internal.speed = -139 --better off ground detection then before
 internal.use_teams = true -- respect teams on explode
 internal.explosion_radius =  4
 internal.drop_radius_addition =  4
-internal.cool_down = 15
+internal.cooldown = 15
 --items that override bomb dropping
 bomb_override = {   "ctf_ranged:pistol",
                     "ctf_ranged:rifle",
