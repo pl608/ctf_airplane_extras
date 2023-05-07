@@ -19,6 +19,7 @@ internal.speed = -139 --better off ground detection then before
 internal.use_teams = true -- respect teams on explode
 internal.explosion_radius =  4
 internal.drop_radius_addition =  4
+internal.cool_down = 15
 --items that override bomb dropping
 bomb_override = {   "ctf_ranged:pistol",
                     "ctf_ranged:rifle",
@@ -61,9 +62,10 @@ end
 
 --pa28/utilities.lua:234,
 function extras.airplane_destroy(color)
-    if internal.airplanes_destroyed[color] then internal.airplanes_destroyed[color] = 1
-    end
-    internal.airplanes_destroyed[color] = internal.airplanes_destroyed[color] +1
+    --if internal.airplanes_destroyed[color] then internal.airplanes_destroyed[color] = 1
+    --end
+    --internal.airplanes_destroyed[color] = internal.airplanes_destroyed[color] +1
+    -- nuthin here :P
 end
 --pa28/entites.lua:366
 function extras.DropBomb(self, player)
@@ -102,14 +104,18 @@ end
 
 function internal.spawn_plane(pos, node, other, color)
     --if airplanes_destroyed_red <= 0 then return end
-    if other ~= nil then if other:get_wielded_item():get_name() or "did not work" == "ctf_map:adminpick" then return end end
+    --if other ~= nil then 
+    --    if other:get_wielded_item():get_name() or "did not work" == "ctf_map:adminpick" then 
+    --        return 
+    --    end 
+    --end
     --if plane_spawned[pos_tostring(pos)] then return else plane_spawned[pos_tostring(pos)] = true end
     
-    if internal.airplanes_destroyed[color] <= 0 then
-        return 
-    else 
-        internal.airplanes_destroyed[color] = internal.airplanes_destroyed[color]-1 
-    end
+    --if internal.airplanes_destroyed[color] <= 0 then
+    --    return 
+    --else 
+    --    internal.airplanes_destroyed[color] = internal.airplanes_destroyed[color]-1 
+    --end
     
     
     local pointed_pos = pos
@@ -119,7 +125,7 @@ function internal.spawn_plane(pos, node, other, color)
     pointed_pos.y=pointed_pos.y+2.5
     --plane_spawned[pos_tostring(pos)] = true
     local pa28_ent = minetest.add_entity(pointed_pos, "pa28_custom:pa28")
-    extras.paint_team(pa28_ent, nil, color) -- should color plane on spawn 
+    --extras.paint_team(pa28_ent, nil, color) -- should color plane on spawn 
     return itemstack
 end
 

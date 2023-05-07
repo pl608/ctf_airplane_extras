@@ -8,9 +8,32 @@ function extras.register_spawnbloc(color)
         tiles = {"default_stone_brick.png^pa28.png"},
         groups = {immortal = 1, not_in_creative_inventory=1},
         on_punch = function(pos, node, puncher)
-            internal.spawn_plane(pos, node, puncher, color)
-            minetest.chat_send_player(puncher:get_player_name(), 'Spawned you an airplane!')
+            local meta = minetest.get_meta(pos)
+            local time = meta:get_int('ctf_airplane_extras:timer')
+            if time <= 0 then
+                internal.spawn_plane(pos, node, puncher, color)
+                meta:set_int('ctf_airplane_extras:timer', internal.cooldown)
+            else
+                minetest.chat_send_player(puncher:get_player_name(), 'You need to wait for the cool down to finish to spawn plane.')
+            end
+                --minetest.chat_send_player(puncher:get_player_name(), 'Spawned you an airplane!')
         end,
+    })
+    minetest.register_abm({
+        nodenames = {"ctf_airplane_extras:airplane_spawnblock_"..color},
+        --neighbors = {"default:water_source", "default:water_flowing"},
+        interval = 1, -- Run every 2 seconds
+        chance = 1, -- Select every 1 in 1 nodes
+        action = function(pos, node, active_object_count, active_object_count_wider)
+            local meta  = minetest.get_meta(pos)
+            local timer = meta:get_int('ctf_airplane_extras:timer') or 1
+            if timer <= 0 then
+                meta:set_string('infotext', 'Ready To Spawn a Plane')
+                return
+            end
+            meta:set_string('infotext', 'Cool Down: '..get('ctf_airplane_extras:timer'))
+            meta:set_int('ctf_airplane_extras:timer', timer-1)
+        end
     })
 end
 extras.register_spawnbloc('red')
