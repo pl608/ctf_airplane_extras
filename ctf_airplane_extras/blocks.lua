@@ -31,7 +31,7 @@ function extras.register_spawnbloc(color)
                 meta:set_string('infotext', 'Ready To Spawn a Plane')
                 return
             end
-            meta:set_string('infotext', 'Cool Down: '..get('ctf_airplane_extras:timer'))
+            meta:set_string('infotext', 'Cool Down: '..meta:get('ctf_airplane_extras:timer'))
             meta:set_int('ctf_airplane_extras:timer', timer-1)
         end
     })

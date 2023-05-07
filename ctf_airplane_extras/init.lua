@@ -38,7 +38,7 @@ last_drop = 0 -- need to move this to player meta so that you can spawn bombs fa
 local zero = {x=0,y=0,z=0}
 --pa28/utilites.lua:33
 function extras.paint_team(self,player,color)
-    if color==nil then 
+    if color==nil then
         if player == nil then
             return
         end
