@@ -28,10 +28,11 @@ function extras.register_spawnbloc(color)
             local meta  = minetest.get_meta(pos)
             local timer = meta:get_int('ctf_airplane_extras:timer') or 1
             if timer <= 0 then
-                meta:set_string('infotext', 'Ready To Spawn a Plane')
+                meta:set_string('infotext', 'Ready To Spawn a Plane!')
                 return
             end
             meta:set_string('infotext', 'Cool Down: '..meta:get('ctf_airplane_extras:timer'))
+            --meta:set_string('infotext', 'Cool Down ['..'#'*((timer/internal.cooldown)*5)..']')
             meta:set_int('ctf_airplane_extras:timer', timer-1)
         end
     })

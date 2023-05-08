@@ -13,13 +13,13 @@ internal.colors ={
 }
 
 
-extras.auto_spawn = true --doesnt work yet and is ignored
+--extras.auto_spawn = true --doesnt work yet and is ignored
 extras.max_power = 500 --*technicly*should not be messed with but its fun
 internal.speed = -139 --better off ground detection then before
 internal.use_teams = true -- respect teams on explode
 internal.explosion_radius =  4
 internal.drop_radius_addition =  4
-internal.cooldown = 15
+internal.cooldown = 15 -- blocks.lua:22
 --items that override bomb dropping
 bomb_override = {   "ctf_ranged:pistol",
                     "ctf_ranged:rifle",
@@ -46,7 +46,7 @@ function extras.paint_team(self,player,color)
     end
     local texture_name = "pa28_painting.png"
     self.team = ctf_teams.get(player)
-    minetest.log(tostring(self.team))
+    --minetest.log(tostring(self.team))
     if self.team ~= nil then
         self._color = colstr
         local l_textures = self.initial_properties.textures
@@ -125,7 +125,8 @@ function internal.spawn_plane(pos, node, other, color)
     pointed_pos.y=pointed_pos.y+2.5
     --plane_spawned[pos_tostring(pos)] = true
     local pa28_ent = minetest.add_entity(pointed_pos, "pa28_custom:pa28")
-    --extras.paint_team(pa28_ent, nil, color) -- should color plane on spawn 
+
+    extras.paint_team(pa28_ent:get_luaentity(), nil, color) -- should color plane on spawn 
     return itemstack
 end
 
