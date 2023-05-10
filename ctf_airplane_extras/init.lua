@@ -13,13 +13,12 @@ internal.colors ={
 }
 
 
---extras.auto_spawn = true --doesnt work yet and is ignored
+extras.auto_spawn = true --doesnt work yet and is ignored
 extras.max_power = 500 --*technicly*should not be messed with but its fun
 internal.speed = -139 --better off ground detection then before
 internal.use_teams = true -- respect teams on explode
 internal.explosion_radius =  4
 internal.drop_radius_addition =  4
-internal.cooldown = 15 -- blocks.lua:22
 --items that override bomb dropping
 bomb_override = {   "ctf_ranged:pistol",
                     "ctf_ranged:rifle",
@@ -29,31 +28,25 @@ bomb_override = {   "ctf_ranged:pistol",
                     "ctf_ranged:sniper_magnum",
                     "ctf_airplane_extras:gasoline"
 } 
-internal.airplanes_destroyed = {}
-
+airplanes_destroyed_red = 0
+airplanes_destroyed_blue = 0
 airutils.fuel = {["ctf_airplane_extras:gasoline"] = 15/2} -- just kicked biofuel off the market :P
 bomb_dejitter_time = 1--drop rate in secs higher the less bombs dropped per sec ie 10 = .1 dps 1 = 1 dps .1 = 1 dps(only intergers allowed :) and 0 means you die :P
-last_drop = 0 -- need to move this to player meta so that you can spawn bombs faster. for lag reasons not messing with it now
+last_drop = 0
 
 local zero = {x=0,y=0,z=0}
 --pa28/utilites.lua:33
-function extras.paint_team(self,player,color)
-    if color==nil then
-        if player == nil then
-            return
-        end
-        color = ctf_teams.get(player)
-    end
+function extras.paint_team(self,player)
     local texture_name = "pa28_painting.png"
     self.team = ctf_teams.get(player)
-    --minetest.log(tostring(self.team))
+    minetest.log(tostring(self.team))
     if self.team ~= nil then
         self._color = colstr
         local l_textures = self.initial_properties.textures
         for _, texture in ipairs(l_textures) do
             local indx = texture:find(texture_name)
             if indx then
-                l_textures[_] = texture_name.."^[multiply:".. internal.colors[color]
+                l_textures[_] = texture_name.."^[multiply:".. internal.colors[ctf_teams.get(player)]
             end
         end
 	    self.object:set_properties({textures=l_textures})
@@ -62,10 +55,12 @@ end
 
 --pa28/utilities.lua:234,
 function extras.airplane_destroy(color)
-    --if internal.airplanes_destroyed[color] then internal.airplanes_destroyed[color] = 1
-    --end
-    --internal.airplanes_destroyed[color] = internal.airplanes_destroyed[color] +1
-    -- nuthin here :P
+    if color == "red" then
+        airplanes_destroyed_red = airplanes_destroyed_red+1
+    end
+    if color == "blue" then
+        airplanes_destroyed_blue = airplanes_destroyed_blue+1
+    end
 end
 --pa28/entites.lua:366
 function extras.DropBomb(self, player)
@@ -85,7 +80,7 @@ function extras.DropBomb(self, player)
             if inv:contains_item("main", inventory_item) then
                 local stack = ItemStack(inventory_item .. " 1")
                 inv:remove_item("main", stack)
-                if ctf_teams.get(player) == color then -- kinda reduntant but ig its an extra check
+                if ctf_teams.get(player) == color then
                     minetest.add_entity(player:get_pos(), "ctf_airplane_extras:missile_" .. color)
                 else
                     minetest.add_entity(player:get_pos(), "ctf_airplane_extras:missile_blue")
@@ -95,28 +90,30 @@ function extras.DropBomb(self, player)
             end
         end
     end
-    --drop("red")
-    --drop("orange")
-    --drop("purple")
-    --drop("blue")
-    drop(team)
+    drop("red")
+    drop("orange")
+    drop("purple")
+    drop("blue")
 end
 
-function internal.spawn_plane(pos, node, other, color)
+function internal.spawn_plane(pos, node, other, is_red)
     --if airplanes_destroyed_red <= 0 then return end
-    --if other ~= nil then 
-    --    if other:get_wielded_item():get_name() or "did not work" == "ctf_map:adminpick" then 
-    --        return 
-    --    end 
-    --end
+    if other ~= nil then if other:get_wielded_item():get_name() or "did not work" == "ctf_map:adminpick" then return end end
     --if plane_spawned[pos_tostring(pos)] then return else plane_spawned[pos_tostring(pos)] = true end
-    
-    --if internal.airplanes_destroyed[color] <= 0 then
-    --    return 
-    --else 
-    --    internal.airplanes_destroyed[color] = internal.airplanes_destroyed[color]-1 
-    --end
-    
+    if is_red then 
+        if airplanes_destroyed_red <= 0 then
+            return 
+        else 
+            airplanes_destroyed_red = airplanes_destroyed_red-1 
+        end
+    end
+    if not is_red then 
+        if airplanes_destroyed_blue <= 0 then 
+            return 
+        else 
+            airplanes_destroyed_blue = airplanes_destroyed_blue-1 
+        end
+    end
     
     local pointed_pos = pos
     --local node_below = minetest.get_node(pointed_pos).name
@@ -125,8 +122,6 @@ function internal.spawn_plane(pos, node, other, color)
     pointed_pos.y=pointed_pos.y+2.5
     --plane_spawned[pos_tostring(pos)] = true
     local pa28_ent = minetest.add_entity(pointed_pos, "pa28_custom:pa28")
-
-    extras.paint_team(pa28_ent:get_luaentity(), nil, color) -- should color plane on spawn 
     return itemstack
 end
 
@@ -303,17 +298,7 @@ function get_table_len(table)
 end
 
 -- DEBUG TOOLS
-----[[
-minetest.register_chatcommand('set_spawn', {
-    params = "<color> <amount>",
-	description = "set amount of planes in <color> to 10",
-	privs = {interact = true},
-    func = function(name, param)
-        
-        local pname, score = string.match(param, "^(.*) (.*)$")
-        internal.airplanes_destroyed[pname] = 10
-    end
-})
+--[[
 minetest.register_chatcommand("vars", {
 	params = "",
 	description = "shows vars",
@@ -335,8 +320,8 @@ minetest.register_chatcommand("drop", {
         extras.DropBomb(player)
     end
 })
---
-----]]
+
+]]
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/blocks.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/items.lua")
 dofile(minetest.get_modpath("ctf_airplane_extras") .. "/entities.lua")
